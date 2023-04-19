@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+    <Properties>
+        <Property name="log-pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} | %-20.20t | %-30.30c{1} | %-5p || %m%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="stdout" track="SYSTEM_OUT">
+            <PatternLayout pattern="${log-pattern}"/>
+        </Console>
+        <RollingFile name="IAM" fileName="logs/IAM.log"
+                     filePattern="logs/IAM-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${log-pattern}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="stdout"/>
+            <AppenderRef ref="IAM"/>
+        </Root>
+    </Loggers>
+</Configuration>
