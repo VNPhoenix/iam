@@ -1,8 +1,8 @@
 package vn.dangdnh.repository.user;
 
-import vn.dangdnh.model.user.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import vn.dangdnh.model.user.UserInfo;
 
-public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustom {
+public interface UserRepository extends MongoRepository<UserInfo, String>, UserRepositoryCustom {
 
 }

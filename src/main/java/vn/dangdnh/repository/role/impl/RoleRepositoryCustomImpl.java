@@ -1,11 +1,11 @@
 package vn.dangdnh.repository.role.impl;
 
-import vn.dangdnh.model.role.Role;
-import vn.dangdnh.repository.role.RoleRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import vn.dangdnh.model.role.Role;
+import vn.dangdnh.repository.role.RoleRepositoryCustom;
 
 public class RoleRepositoryCustomImpl implements RoleRepositoryCustom {
 

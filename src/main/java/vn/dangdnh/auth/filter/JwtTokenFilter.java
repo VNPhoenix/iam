@@ -1,13 +1,13 @@
 package vn.dangdnh.auth.filter;
 
-import vn.dangdnh.dto.request.token.JwtTokenValidationRequestCommand;
-import vn.dangdnh.dto.response.TokenValidationResult;
-import vn.dangdnh.service.identity.TokenService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import vn.dangdnh.dto.request.token.JwtTokenValidationRequest;
+import vn.dangdnh.dto.response.TokenValidationResult;
+import vn.dangdnh.service.identity.TokenService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -31,7 +31,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String bearerToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (Objects.nonNull(bearerToken)) {
             String accessToken = bearerToken.substring("Bearer ".length());
-            JwtTokenValidationRequestCommand command = JwtTokenValidationRequestCommand.builder()
+            JwtTokenValidationRequest command = JwtTokenValidationRequest.builder()
                     .accessToken(accessToken)
                     .build();
             TokenValidationResult result = tokenService.validateJwtToken(command);

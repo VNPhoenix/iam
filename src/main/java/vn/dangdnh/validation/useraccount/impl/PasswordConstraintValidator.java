@@ -1,7 +1,7 @@
 package vn.dangdnh.validation.useraccount.impl;
 
-import vn.dangdnh.validation.useraccount.ValidPassword;
 import org.passay.*;
+import vn.dangdnh.validation.useraccount.ValidPassword;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

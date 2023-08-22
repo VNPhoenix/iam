@@ -9,9 +9,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserSignInRequest {
 
-    @NotNull(message = "username must not be null!")
+    @NotNull(message = "username must not be null")
     private String username;
 
-    @NotNull(message = "password must not be null!")
+    @NotNull(message = "password must not be null")
     private String password;
 }

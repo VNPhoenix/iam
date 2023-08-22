@@ -1,8 +1,8 @@
 package vn.dangdnh.dto.request.user;
 
-import vn.dangdnh.validation.useraccount.ValidPassword;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import vn.dangdnh.validation.useraccount.ValidPassword;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserSignUpRequest {
 
-    @NotNull(message = "username should not be null!")
+    @NotNull(message = "username should not be null")
     private String username;
 
-    @NotNull(message = "password should not be null!")
     @ValidPassword
+    @NotNull(message = "password should not be null")
     private String password;
 }

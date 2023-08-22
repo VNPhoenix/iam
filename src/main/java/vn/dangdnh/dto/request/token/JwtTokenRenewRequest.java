@@ -8,9 +8,9 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
-public class JwtTokenRenewRequestCommand {
+public class JwtTokenRenewRequest {
 
-    @NotNull(message = "refresh_token must not be null")
     @JsonProperty("refresh_token")
+    @NotNull(message = "refresh_token must not be null")
     private String refreshToken;
 }

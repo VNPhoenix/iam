@@ -4,16 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import vn.dangdnh.config.JwtConfig;
-import vn.dangdnh.definition.TimeZones;
-import vn.dangdnh.security.utils.JwtUtils;
-import vn.dangdnh.utils.ZonedDateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import vn.dangdnh.config.JwtConfig;
+import vn.dangdnh.security.utils.JwtUtils;
 
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Component
@@ -31,14 +26,12 @@ public class JwtUtilsImpl implements JwtUtils {
     }
 
     @Override
-    public String generateToken(Authentication auth) {
-        UserDetails principal = (UserDetails) auth.getPrincipal();
-        ZonedDateTime zdt = ZonedDateTimeUtils.now(TimeZones.VIETNAM);
-        Date issueDate = ZonedDateTimeUtils.toDate(zdt);
-        Date expirationDate = ZonedDateTimeUtils.toDate(zdt.plusSeconds(
-                config.getExpirationDuration().getSeconds()));
+    public String generateToken(String username) {
+        Date issueDate = new Date();
+        long now = issueDate.getTime();
+        Date expirationDate = new Date(now + config.getExpirationDuration().toMillis());
         return JWT.create()
-                .withSubject(principal.getUsername())
+                .withSubject(username)
                 .withIssuedAt(issueDate)
                 .withExpiresAt(expirationDate)
                 .sign(algorithm);
