@@ -1,25 +1,24 @@
 package vn.dangdnh.controller.role;
 
-import vn.dangdnh.definition.URIs;
-import vn.dangdnh.dto.role.RoleDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import vn.dangdnh.dto.command.RoleCreateCommand;
+import vn.dangdnh.dto.role.RoleDto;
 
 import javax.validation.Valid;
 
-@RequestMapping(URIs.ROLE)
+@Validated
+@RequestMapping("${app.base-url}")
 public interface RoleController {
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/roles/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<RoleDto> findById(@PathVariable String id);
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RoleDto> create(@RequestBody @Valid RoleDto dto);
+    @PostMapping(value = "/roles", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<RoleDto> create(@RequestBody @Valid RoleCreateCommand command);
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RoleDto> updateById(@PathVariable String id, @RequestBody @Valid RoleDto dto);
-
-    @DeleteMapping(value = "/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @DeleteMapping(value = "/roles/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
     ResponseEntity<String> deleteById(@PathVariable String id);
 }

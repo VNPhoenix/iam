@@ -1,24 +1,19 @@
 package vn.dangdnh.controller.user.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import vn.dangdnh.controller.user.UserController;
-import vn.dangdnh.definition.URIs;
 import vn.dangdnh.dto.request.user.UserSignInRequest;
 import vn.dangdnh.dto.request.user.UserSignUpRequest;
 import vn.dangdnh.dto.response.TokenDetails;
-import vn.dangdnh.dto.user.UserDto;
+import vn.dangdnh.dto.user.UserInfoDto;
 import vn.dangdnh.service.identity.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@Validated
 @RestController
-@RequestMapping(URIs.AUTH)
 public class UserControllerImpl implements UserController {
 
     private final UserService service;
@@ -29,8 +24,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<UserDto> signUp(@RequestBody @Valid UserSignUpRequest request) {
-        UserDto response = service.signUp(request);
+    public ResponseEntity<UserInfoDto> signUp(@RequestBody @Valid UserSignUpRequest request) {
+        UserInfoDto response = service.signUp(request);
         return ResponseEntity.ok(response);
     }
 

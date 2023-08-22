@@ -10,5 +10,5 @@ public class URIs {
     public static final String HOME = ROOT + "/home";
     public static final String USER = AUTH + "/users";
     public static final String TOKEN = USER + "/tokens";
-    public static final String ROLE = ROOT + "/roles";
+    public static final String ROLES = ROOT + "/roles";
 }

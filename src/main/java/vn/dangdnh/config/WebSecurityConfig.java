@@ -1,9 +1,5 @@
 package vn.dangdnh.config;
 
-import vn.dangdnh.auth.entrypoint.JwtAuthEntryPoint;
-import vn.dangdnh.auth.filter.JwtTokenFilter;
-import vn.dangdnh.definition.URIs;
-import vn.dangdnh.service.identity.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +10,10 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import vn.dangdnh.auth.entrypoint.JwtAuthEntryPoint;
+import vn.dangdnh.auth.filter.JwtTokenFilter;
+import vn.dangdnh.definition.URIs;
+import vn.dangdnh.service.identity.TokenService;
 
 import java.util.Collections;
 

@@ -1,11 +1,10 @@
 package vn.dangdnh.security.utils;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.security.core.Authentication;
 
 public interface JwtUtils {
 
-    String generateToken(Authentication auth);
+    String generateToken(String username);
 
     DecodedJWT decodeToken(String token);
 

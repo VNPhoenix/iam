@@ -2,16 +2,16 @@ package vn.dangdnh.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.Set;
 
-@Getter
-@Builder
+@Data
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDto {
+public class UserInfoDto {
 
     private String username;
 
@@ -21,11 +21,11 @@ public class UserDto {
     private Boolean isEnabled;
 
     @JsonProperty("last_login")
-    private ZonedDateTime lastLogin;
+    private Date lastLogin;
 
     @JsonProperty("created_at")
-    private ZonedDateTime createAt;
+    private Date createdAt;
 
     @JsonProperty("updated_at")
-    private ZonedDateTime updatedAt;
+    private Date updatedAt;
 }

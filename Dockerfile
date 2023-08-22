@@ -1,7 +1,7 @@
 FROM dnhdang94/openjdk:8-jre-alpine
 LABEL maintainer="dnhdang94"
 
-# Add user and group
+# Add userInfo and group
 RUN addgroup -g 7979 dnhdang94 && \
     adduser -D -u 7979 -G dnhdang94 dnhdang94
 
@@ -14,7 +14,7 @@ WORKDIR /app
 RUN chown -R dnhdang94:dnhdang94 /app
 RUN chmod 755 /app
 
-# Run as user
+# Run as userInfo
 USER c4imn
 
 # Copy compiled jar from host to work directory inside Docker image
