@@ -29,7 +29,7 @@ public class JwtUtilsImpl implements JwtUtils {
     public String generateToken(String username) {
         Date issueDate = new Date();
         long now = issueDate.getTime();
-        Date expirationDate = new Date(now + config.getExpirationDuration().toMillis());
+        Date expirationDate = new Date(now + config.getExpirationInMillis());
         return JWT.create()
                 .withSubject(username)
                 .withIssuedAt(issueDate)

@@ -6,11 +6,9 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 
 @Configuration
-@PropertySource("file:config/mongodb.properties")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${mongodb.connectionString}")
@@ -31,16 +29,14 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     }
 
     @Override
-    protected boolean autoIndexCreation() {
-        return true;
+    protected MongoClientSettings mongoClientSettings() {
+        return MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .build();
     }
 
     @Override
-    public MongoClient mongoClient() {
-        ConnectionString cns = new ConnectionString(connectionString);
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(cns)
-                .build();
+    protected MongoClient createMongoClient(MongoClientSettings settings) {
         return MongoClients.create(settings);
     }
 }

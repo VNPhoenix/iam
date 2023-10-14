@@ -69,6 +69,7 @@ public class AdvisorController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
+    @SuppressWarnings("unchecked")
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ExceptionMessages.Binding.HTTP_MESSAGE_NOT_READABLE);
@@ -79,7 +80,6 @@ public class AdvisorController {
         } else if (cause instanceof JsonMappingException) {
             Class<?> clazz = cause.getClass();
             Method method = clazz.getMethod("getPath");
-            @SuppressWarnings("unchecked")
             List<JsonMappingException.Reference> references = (List<JsonMappingException.Reference>) method.invoke(cause);
             if (Objects.nonNull(references) && !references.isEmpty()) {
                 for (JsonMappingException.Reference reference : references) {
@@ -110,7 +110,6 @@ public class AdvisorController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception e) {
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
-        System.out.println(e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 }
