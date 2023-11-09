@@ -7,18 +7,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import vn.dangdnh.dto.request.token.JwtTokenRenewRequest;
-import vn.dangdnh.dto.request.token.JwtTokenValidationRequest;
+import vn.dangdnh.dto.request.token.JwtTokenRenew;
+import vn.dangdnh.dto.request.token.JwtTokenVerification;
 import vn.dangdnh.dto.response.JwtToken;
-import vn.dangdnh.dto.response.TokenValidationResult;
+import vn.dangdnh.dto.response.TokenVerification;
 
 @Validated
-@RequestMapping("${app.context-path}")
+@RequestMapping("${app.context-path}/auth/users/tokens")
 public interface TokenController {
 
-    @PostMapping(value = "/auth/users/tokens/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<TokenValidationResult> validateJwtToken(@RequestBody @Valid JwtTokenValidationRequest request);
+    @PostMapping(value = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<TokenVerification> verifyToken(@RequestBody @Valid JwtTokenVerification request);
 
-    @PostMapping(value = "/auth/users/tokens/renew", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<JwtToken> renewJwtToken(@RequestBody @Valid JwtTokenRenewRequest request);
+    @PostMapping(value = "/renew", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<JwtToken> renewToken(@RequestBody @Valid JwtTokenRenew request);
 }

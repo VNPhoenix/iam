@@ -1,12 +1,16 @@
 package vn.dangdnh.dto.request.user;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Getter
 @NoArgsConstructor
-public class UserSignInRequest {
+@AllArgsConstructor
+@Accessors(chain = true)
+public class UserSignIn {
 
     @NotNull(message = "username must not be null")
     private String username;

@@ -9,8 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import vn.dangdnh.dto.request.token.JwtTokenValidationRequest;
-import vn.dangdnh.dto.response.TokenValidationResult;
+import vn.dangdnh.dto.request.token.JwtTokenVerification;
+import vn.dangdnh.dto.response.TokenVerification;
 import vn.dangdnh.service.identity.TokenService;
 
 import java.io.IOException;
@@ -33,10 +33,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String bearerToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (Objects.nonNull(bearerToken)) {
             String accessToken = bearerToken.substring("Bearer ".length());
-            JwtTokenValidationRequest command = JwtTokenValidationRequest.builder()
+            JwtTokenVerification command = JwtTokenVerification.builder()
                     .accessToken(accessToken)
                     .build();
-            TokenValidationResult result = tokenService.validateJwtToken(command);
+            TokenVerification result = tokenService.validateJwtToken(command);
             if (result.isValid()) {
                 Set<SimpleGrantedAuthority> authorities = result.getAuthorities().stream()
                         .map(SimpleGrantedAuthority::new)

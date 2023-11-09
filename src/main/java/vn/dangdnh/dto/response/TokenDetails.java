@@ -1,11 +1,13 @@
 package vn.dangdnh.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-@Getter
-@Builder
+@Data
+@NoArgsConstructor
+@Accessors(chain = true)
 public class TokenDetails {
 
     private String username;

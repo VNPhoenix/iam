@@ -15,7 +15,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import vn.dangdnh.config.security.entrypoint.JwtAuthEntryPoint;
 import vn.dangdnh.config.security.filter.JwtTokenFilter;
-import vn.dangdnh.definition.URIs;
 import vn.dangdnh.service.identity.TokenService;
 
 import java.util.Collections;
