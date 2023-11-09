@@ -1,10 +1,10 @@
 package vn.dangdnh.validation.enumvalues.impl;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import vn.dangdnh.definition.message.exception.ExceptionMessages;
 import vn.dangdnh.validation.enumvalues.ValidEnum;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

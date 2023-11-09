@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Configuration;
 public class ModelMapperConfig {
 
     @Bean
-    protected ModelMapper modelMapper() {
+    ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration()
                 .setFieldMatchingEnabled(true)
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
-                .setPropertyCondition(Conditions.isNotNull())
+                .setSkipNullEnabled(true)
                 .setCollectionsMergeEnabled(false);
         return modelMapper;
     }

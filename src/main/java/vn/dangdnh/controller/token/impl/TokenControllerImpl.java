@@ -1,5 +1,6 @@
 package vn.dangdnh.controller.token.impl;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,8 +10,6 @@ import vn.dangdnh.dto.request.token.JwtTokenValidationRequest;
 import vn.dangdnh.dto.response.JwtToken;
 import vn.dangdnh.dto.response.TokenValidationResult;
 import vn.dangdnh.service.identity.TokenService;
-
-import javax.validation.Valid;
 
 @RestController
 public class TokenControllerImpl implements TokenController {

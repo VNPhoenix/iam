@@ -39,7 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class IdentityAccessManagementImpl implements UserService, TokenService, RoleService {
+public class IAMServiceImpl implements UserService, TokenService, RoleService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -47,8 +47,10 @@ public class IdentityAccessManagementImpl implements UserService, TokenService, 
     private final ModelMapper modelMapper;
 
     @Autowired
-    public IdentityAccessManagementImpl(UserRepository userRepository, RoleRepository roleRepository,
-                                        JwtUtils jwtUtils, ModelMapper modelMapper) {
+    public IAMServiceImpl(final UserRepository userRepository,
+                          final RoleRepository roleRepository,
+                          final JwtUtils jwtUtils,
+                          final ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.jwtUtils = jwtUtils;

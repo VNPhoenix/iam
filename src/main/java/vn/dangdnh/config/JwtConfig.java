@@ -10,13 +10,13 @@ public class JwtConfig {
 
     // Default expiration time is 15 minutes
     @Value("${jwt.expirationTime:PT15M}")
-    private Duration expirationDuration;
+    private Duration duration;
 
     public long getExpirationInSecond() {
-        return expirationDuration.getSeconds();
+        return duration.getSeconds();
     }
 
     public long getExpirationInMillis() {
-        return expirationDuration.toMillis();
+        return duration.toMillis();
     }
 }

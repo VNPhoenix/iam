@@ -1,10 +1,9 @@
 package vn.dangdnh.dto.request.user;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import vn.dangdnh.validation.useraccount.ValidPassword;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor

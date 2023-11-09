@@ -1,5 +1,6 @@
 package vn.dangdnh.controller.user.impl;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,8 +11,6 @@ import vn.dangdnh.dto.request.user.UserSignUpRequest;
 import vn.dangdnh.dto.response.TokenDetails;
 import vn.dangdnh.dto.user.UserInfoDto;
 import vn.dangdnh.service.identity.UserService;
-
-import javax.validation.Valid;
 
 @RestController
 public class UserControllerImpl implements UserController {
