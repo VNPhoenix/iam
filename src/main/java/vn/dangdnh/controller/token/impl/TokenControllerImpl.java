@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import vn.dangdnh.controller.token.TokenController;
-import vn.dangdnh.dto.request.token.JwtTokenRenewRequest;
-import vn.dangdnh.dto.request.token.JwtTokenValidationRequest;
+import vn.dangdnh.dto.request.token.JwtTokenRenew;
+import vn.dangdnh.dto.request.token.JwtTokenVerification;
 import vn.dangdnh.dto.response.JwtToken;
-import vn.dangdnh.dto.response.TokenValidationResult;
+import vn.dangdnh.dto.response.TokenVerification;
 import vn.dangdnh.service.identity.TokenService;
 
 @RestController
@@ -22,13 +22,13 @@ public class TokenControllerImpl implements TokenController {
     }
 
     @Override
-    public ResponseEntity<TokenValidationResult> validateJwtToken(@Valid JwtTokenValidationRequest request) {
-        TokenValidationResult response = service.validateJwtToken(request);
+    public ResponseEntity<TokenVerification> verifyToken(@Valid JwtTokenVerification request) {
+        TokenVerification response = service.validateJwtToken(request);
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<JwtToken> renewJwtToken(@Valid JwtTokenRenewRequest request) {
+    public ResponseEntity<JwtToken> renewToken(@Valid JwtTokenRenew request) {
         JwtToken response = service.renewJwtToken(request);
         return ResponseEntity.ok(response);
     }

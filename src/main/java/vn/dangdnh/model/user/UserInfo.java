@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import vn.dangdnh.definition.CollectionNames;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +26,7 @@ public class UserInfo {
 
     private String password;
 
-    private Set<String> authorities;
+    private List<String> authorities;
 
     @Field("is_account_non_expired")
     private Boolean isAccountNonExpired;

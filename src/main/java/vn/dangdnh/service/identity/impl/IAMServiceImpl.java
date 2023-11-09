@@ -13,13 +13,13 @@ import vn.dangdnh.definition.CryptoAlgorithm;
 import vn.dangdnh.definition.DefaultRole;
 import vn.dangdnh.definition.message.exception.ExceptionMessages;
 import vn.dangdnh.dto.command.RoleCreateCommand;
-import vn.dangdnh.dto.request.token.JwtTokenRenewRequest;
-import vn.dangdnh.dto.request.token.JwtTokenValidationRequest;
-import vn.dangdnh.dto.request.user.UserSignInRequest;
-import vn.dangdnh.dto.request.user.UserSignUpRequest;
+import vn.dangdnh.dto.request.token.JwtTokenRenew;
+import vn.dangdnh.dto.request.token.JwtTokenVerification;
+import vn.dangdnh.dto.request.user.UserSignIn;
+import vn.dangdnh.dto.request.user.UserSignUp;
 import vn.dangdnh.dto.response.JwtToken;
 import vn.dangdnh.dto.response.TokenDetails;
-import vn.dangdnh.dto.response.TokenValidationResult;
+import vn.dangdnh.dto.response.TokenVerification;
 import vn.dangdnh.dto.role.RoleDto;
 import vn.dangdnh.dto.user.UserInfoDto;
 import vn.dangdnh.exception.AuthenticationException;
@@ -58,7 +58,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     }
 
     @Override
-    public UserInfoDto signUp(UserSignUpRequest request) {
+    public UserInfoDto signUp(UserSignUp request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new EntityAlreadyExistsException(ExceptionMessages.USERNAME_ALREADY_EXISTS);
         }
@@ -87,7 +87,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     }
 
     @Override
-    public TokenDetails signIn(UserSignInRequest request) {
+    public TokenDetails signIn(UserSignIn request) {
         UserInfo userInfo = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AuthenticationException(ExceptionMessages.Security.WRONG_USERNAME));
         if (!BCrypt.checkpw(request.getPassword(), userInfo.password())) {
@@ -96,17 +96,16 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
         Date date = new Date();
         userRepository.updateLastLoginByUsername(userInfo.username(), date);
         String jwtToken = jwtUtils.generateToken(userInfo.username());
-        return TokenDetails.builder()
-                .username(userInfo.username())
-                .accessToken(jwtToken)
-                .build();
+        return new TokenDetails()
+                .setUsername(userInfo.username())
+                .setAccessToken(jwtToken);
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public RoleDto findRoleById(String id) {
         Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessages.ENTITY_NOT_FOUND));
+                .orElseThrow(EntityNotFoundException::new);
         return mapToDto(role);
     }
 
@@ -114,7 +113,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     @PreAuthorize("hasRole('ADMIN')")
     public RoleDto createRole(RoleCreateCommand command) {
         if (roleRepository.existsByAuthority(command.getRoleName())) {
-            throw new EntityAlreadyExistsException(ExceptionMessages.ROLE_ALREADY_EXISTS);
+            throw new EntityAlreadyExistsException();
         }
         validateRolePattern(command.getRoleName());
         Role role = new Role();
@@ -130,7 +129,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     }
 
     @Override
-    public TokenValidationResult validateJwtToken(JwtTokenValidationRequest requestCommand) {
+    public TokenVerification validateJwtToken(JwtTokenVerification requestCommand) {
         String accessToken = requestCommand.getAccessToken();
         try {
             DecodedJWT decodedJWT = jwtUtils.verifyToken(accessToken);
@@ -141,23 +140,21 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
                 boolean valid = userInfo.isEnabled() && userInfo.isAccountNonLocked()
                         && userInfo.isAccountNonExpired() && userInfo.isCredentialsNonExpired();
                 if (valid) {
-                    return TokenValidationResult.builder()
-                            .valid(true)
-                            .username(userInfo.username())
-                            .authorities(userInfo.authorities())
-                            .build();
+                    return new TokenVerification()
+                            .setValid(true)
+                            .setUsername(userInfo.username())
+                            .setAuthorities(userInfo.authorities());
                 }
             }
         } catch (JWTVerificationException ignored) {
 
         }
-        return TokenValidationResult.builder()
-                .valid(false)
-                .build();
+        return new TokenVerification()
+                .setValid(false);
     }
 
     @Override
-    public JwtToken renewJwtToken(JwtTokenRenewRequest requestCommand) {
+    public JwtToken renewJwtToken(JwtTokenRenew requestCommand) {
         return null;
     }
 
@@ -166,8 +163,8 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     // Helper methods
     //
 
-    private Set<String> defaultAuthorities() {
-        return Collections.singleton(DefaultRole.ROLE_USER.name());
+    private List<String> defaultAuthorities() {
+        return Collections.singletonList(DefaultRole.ROLE_USER.name());
     }
 
     private UserInfoDto mapToDto(UserInfo o) {

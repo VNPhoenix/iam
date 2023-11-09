@@ -1,13 +1,11 @@
 package vn.dangdnh.dto.apierror;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class ApiSubError {
 
-    protected String message;
-
-    public ApiSubError(String message) {
-        this.message = message;
-    }
+    private String message;
 }

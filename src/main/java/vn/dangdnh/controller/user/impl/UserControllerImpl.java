@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import vn.dangdnh.controller.user.UserController;
-import vn.dangdnh.dto.request.user.UserSignInRequest;
-import vn.dangdnh.dto.request.user.UserSignUpRequest;
+import vn.dangdnh.dto.request.user.UserSignIn;
+import vn.dangdnh.dto.request.user.UserSignUp;
 import vn.dangdnh.dto.response.TokenDetails;
 import vn.dangdnh.dto.user.UserInfoDto;
 import vn.dangdnh.service.identity.UserService;
@@ -23,13 +23,13 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<UserInfoDto> signUp(@RequestBody @Valid UserSignUpRequest request) {
+    public ResponseEntity<UserInfoDto> signUp(@RequestBody @Valid UserSignUp request) {
         UserInfoDto response = service.signUp(request);
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<TokenDetails> signIn(@RequestBody @Valid UserSignInRequest request) {
+    public ResponseEntity<TokenDetails> signIn(@RequestBody @Valid UserSignIn request) {
         TokenDetails response = service.signIn(request);
         return ResponseEntity.ok(response);
     }
