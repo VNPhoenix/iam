@@ -1,10 +1,10 @@
 package vn.dangdnh.validation.useraccount.impl;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.passay.*;
 import vn.dangdnh.validation.useraccount.ValidPassword;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

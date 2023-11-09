@@ -1,5 +1,6 @@
 package vn.dangdnh.controller.user;
 
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -11,10 +12,8 @@ import vn.dangdnh.dto.request.user.UserSignUpRequest;
 import vn.dangdnh.dto.response.TokenDetails;
 import vn.dangdnh.dto.user.UserInfoDto;
 
-import javax.validation.Valid;
-
 @Validated
-@RequestMapping("${app.base-url}")
+@RequestMapping("${app.context-path}")
 public interface UserController {
 
     @PostMapping(value = "/auth/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,5 +1,6 @@
 package vn.dangdnh.controller.role;
 
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -7,10 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import vn.dangdnh.dto.command.RoleCreateCommand;
 import vn.dangdnh.dto.role.RoleDto;
 
-import javax.validation.Valid;
-
 @Validated
-@RequestMapping("${app.base-url}")
+@RequestMapping("${app.context-path}")
 public interface RoleController {
 
     @GetMapping(value = "/roles/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

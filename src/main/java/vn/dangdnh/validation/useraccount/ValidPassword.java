@@ -1,9 +1,9 @@
 package vn.dangdnh.validation.useraccount;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import vn.dangdnh.validation.useraccount.impl.PasswordConstraintValidator;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented

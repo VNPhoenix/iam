@@ -1,10 +1,9 @@
 package vn.dangdnh.dto.request.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor

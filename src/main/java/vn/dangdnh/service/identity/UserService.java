@@ -1,12 +1,11 @@
 package vn.dangdnh.service.identity;
 
+import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import vn.dangdnh.dto.request.user.UserSignInRequest;
 import vn.dangdnh.dto.request.user.UserSignUpRequest;
 import vn.dangdnh.dto.response.TokenDetails;
 import vn.dangdnh.dto.user.UserInfoDto;
-
-import javax.validation.Valid;
 
 @Validated
 public interface UserService {

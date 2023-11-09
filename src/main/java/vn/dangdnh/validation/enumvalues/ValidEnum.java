@@ -1,9 +1,9 @@
 package vn.dangdnh.validation.enumvalues;
 
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import vn.dangdnh.validation.enumvalues.impl.EnumConstraintValidator;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
