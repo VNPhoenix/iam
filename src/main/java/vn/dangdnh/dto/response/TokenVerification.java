@@ -15,7 +15,7 @@ import java.util.List;
 public class TokenVerification {
 
     @JsonProperty("is_valid")
-    private boolean valid;
+    private Boolean valid;
 
     private String username;
 

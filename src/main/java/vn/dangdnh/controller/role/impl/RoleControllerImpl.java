@@ -7,7 +7,7 @@ import vn.dangdnh.controller.role.RoleController;
 import vn.dangdnh.definition.message.response.ResponseMessages;
 import vn.dangdnh.dto.command.RoleCreateCommand;
 import vn.dangdnh.dto.role.RoleDto;
-import vn.dangdnh.service.identity.RoleService;
+import vn.dangdnh.service.RoleService;
 
 @RestController
 public class RoleControllerImpl implements RoleController {

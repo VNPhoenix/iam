@@ -1,4 +1,4 @@
-FROM dnhdang94/openjdk:8-jre-alpine
+FROM openjdk:17-alpine
 LABEL maintainer="dnhdang94"
 
 # Add userInfo and group
@@ -18,10 +18,10 @@ RUN chmod 755 /app
 USER c4imn
 
 # Copy compiled jar from host to work directory inside Docker image
-COPY $PROJECT_PATH/out/identity-access-management*.jar /app/identity-access-management.jar
+COPY $PROJECT_PATH/target/*.jar /app/app.jar
 
 # Expose ports
 EXPOSE 8080
 
 # Execute service
-ENTRYPOINT ["java", "-jar", "-XX:+ExitOnOutOfMemoryError", "-XX:+CrashOnOutOfMemoryError", "identity-access-management.jar"]
+ENTRYPOINT ["java", "-jar", "-XX:+ExitOnOutOfMemoryError", "-XX:+CrashOnOutOfMemoryError", "app.jar"]

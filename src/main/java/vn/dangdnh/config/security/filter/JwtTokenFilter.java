@@ -11,39 +11,34 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import vn.dangdnh.dto.request.token.JwtTokenVerification;
 import vn.dangdnh.dto.response.TokenVerification;
-import vn.dangdnh.service.identity.TokenService;
+import vn.dangdnh.service.TokenService;
 
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
 
-    public JwtTokenFilter(TokenService tokenService) {
+    public JwtTokenFilter(final TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
         String bearerToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if (Objects.nonNull(bearerToken)) {
+        if (bearerToken != null) {
             String accessToken = bearerToken.substring("Bearer ".length());
-            JwtTokenVerification command = JwtTokenVerification.builder()
-                    .accessToken(accessToken)
-                    .build();
-            TokenVerification result = tokenService.validateJwtToken(command);
-            if (result.isValid()) {
-                Set<SimpleGrantedAuthority> authorities = result.getAuthorities().stream()
+            JwtTokenVerification command = new JwtTokenVerification(accessToken);
+            TokenVerification result = tokenService.verifyToken(command);
+            if (Boolean.TRUE.equals(result.getValid())) {
+                List<SimpleGrantedAuthority> authorities = result.getAuthorities().stream()
                         .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toSet());
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        result.getUsername(), null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        .toList();
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        result.getUsername(), "", authorities);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);

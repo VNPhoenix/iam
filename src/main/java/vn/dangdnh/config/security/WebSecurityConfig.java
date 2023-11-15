@@ -15,7 +15,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import vn.dangdnh.config.security.entrypoint.JwtAuthEntryPoint;
 import vn.dangdnh.config.security.filter.JwtTokenFilter;
-import vn.dangdnh.service.identity.TokenService;
+import vn.dangdnh.service.TokenService;
 
 import java.util.Collections;
 
@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                 .cors(Customizer.withDefaults())
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/iam/auth", "/iam/home").permitAll()
+                        .requestMatchers("/iam/auth/**", "/iam/home/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
                         .authenticationEntryPoint(new JwtAuthEntryPoint()))

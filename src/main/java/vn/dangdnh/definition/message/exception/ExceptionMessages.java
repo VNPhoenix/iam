@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 public class ExceptionMessages {
     public static final String ENTITY_NOT_FOUND = "Entity was not found";
     public static final String ENTITY_ALREADY_EXISTS = "Entity already exists";
-    public static final String ROLE_ALREADY_EXISTS = "Role already exists";
     public static final String USERNAME_ALREADY_EXISTS = "Username already exists";
     public static final String OPERATION_NOT_ALLOWED = "Operation is not allowed";
     public static final String ROLE_ALREADY_IN_USE = "Role is already in use";
     public static final String INVALID_REGEX = "Given regex is invalid: %s";
-    public static final String UNEXPECTED_ERROR = "Unexpected error";
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Binding {

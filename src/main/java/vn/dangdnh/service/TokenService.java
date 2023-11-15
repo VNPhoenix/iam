@@ -1,4 +1,4 @@
-package vn.dangdnh.service.identity;
+package vn.dangdnh.service;
 
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
@@ -10,7 +10,7 @@ import vn.dangdnh.dto.response.TokenVerification;
 @Validated
 public interface TokenService {
 
-    TokenVerification validateJwtToken(@Valid JwtTokenVerification requestCommand);
+    TokenVerification verifyToken(@Valid JwtTokenVerification requestCommand);
 
     JwtToken renewJwtToken(@Valid JwtTokenRenew requestCommand);
 }

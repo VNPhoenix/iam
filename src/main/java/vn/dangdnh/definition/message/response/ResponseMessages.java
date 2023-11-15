@@ -5,5 +5,5 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResponseMessages {
-    public static final String ENTITY_DELETED_SUCCESSFULLY = "Entity was deleted successfully!";
+    public static final String ENTITY_DELETED_SUCCESSFULLY = "Entity was deleted successfully";
 }

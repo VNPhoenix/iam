@@ -1,4 +1,4 @@
-package vn.dangdnh.security.utils;
+package vn.dangdnh.component;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 

@@ -46,7 +46,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public UpdateResult updateLastLoginByUsername(String username, Date date) {
+    public UpdateResult findAndUpdateLastLoginByUsername(String username, Date date) {
         Criteria criteria = Criteria.where("username").is(username);
         Query query = new Query(criteria);
         Update update = new Update()

@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 public class SpringDocConfig {
 
     @Bean
-    OpenAPI customOpenAPI() {
+    public OpenAPI customOpenAPI() {
         return new OpenAPI().components(
                 new Components()).info(
                 new Info().title("Identity Access Management")
-                        .description("Identity Access Management API Document"));
+                        .description("IAM API Document"));
     }
 }

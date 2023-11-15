@@ -6,7 +6,7 @@ public enum DefaultRole {
 
     private final String text;
 
-    DefaultRole(String text) {
+    DefaultRole(final String text) {
         this.text = text;
     }
 

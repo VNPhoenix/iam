@@ -1,4 +1,4 @@
-package vn.dangdnh.service.identity.impl;
+package vn.dangdnh.service.impl;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -29,10 +29,10 @@ import vn.dangdnh.model.role.Role;
 import vn.dangdnh.model.user.UserInfo;
 import vn.dangdnh.repository.role.RoleRepository;
 import vn.dangdnh.repository.user.UserRepository;
-import vn.dangdnh.security.utils.JwtUtils;
-import vn.dangdnh.service.identity.RoleService;
-import vn.dangdnh.service.identity.TokenService;
-import vn.dangdnh.service.identity.UserService;
+import vn.dangdnh.component.JwtUtils;
+import vn.dangdnh.service.RoleService;
+import vn.dangdnh.service.TokenService;
+import vn.dangdnh.service.UserService;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -89,12 +89,12 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     @Override
     public TokenDetails signIn(UserSignIn request) {
         UserInfo userInfo = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new AuthenticationException(ExceptionMessages.Security.WRONG_USERNAME));
+                .orElseThrow(() -> new AuthenticationException("Wrong username"));
         if (!BCrypt.checkpw(request.getPassword(), userInfo.password())) {
-            throw new AuthenticationException(ExceptionMessages.Security.WRONG_PASSWORD);
+            throw new AuthenticationException("Wrong password");
         }
         Date date = new Date();
-        userRepository.updateLastLoginByUsername(userInfo.username(), date);
+        userRepository.findAndUpdateLastLoginByUsername(userInfo.username(), date);
         String jwtToken = jwtUtils.generateToken(userInfo.username());
         return new TokenDetails()
                 .setUsername(userInfo.username())
@@ -112,7 +112,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public RoleDto createRole(RoleCreateCommand command) {
-        if (roleRepository.existsByAuthority(command.getRoleName())) {
+        if (roleRepository.existsById(command.getRoleName())) {
             throw new EntityAlreadyExistsException();
         }
         validateRolePattern(command.getRoleName());
@@ -129,7 +129,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     }
 
     @Override
-    public TokenVerification validateJwtToken(JwtTokenVerification requestCommand) {
+    public TokenVerification verifyToken(JwtTokenVerification requestCommand) {
         String accessToken = requestCommand.getAccessToken();
         try {
             DecodedJWT decodedJWT = jwtUtils.verifyToken(accessToken);
