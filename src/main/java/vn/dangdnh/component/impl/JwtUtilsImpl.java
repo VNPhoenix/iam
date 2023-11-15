@@ -1,4 +1,4 @@
-package vn.dangdnh.security.utils.impl;
+package vn.dangdnh.component.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -7,7 +7,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vn.dangdnh.config.JwtConfig;
-import vn.dangdnh.security.utils.JwtUtils;
+import vn.dangdnh.component.JwtUtils;
 
 import java.util.Date;
 

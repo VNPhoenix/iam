@@ -1,17 +1,15 @@
 package vn.dangdnh.dto.apierror;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
-import vn.dangdnh.definition.message.exception.ExceptionMessages;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,7 +17,8 @@ public class ApiError {
 
     private HttpStatus status;
 
-    private ZonedDateTime timestamp;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date datetime;
 
     private String message;
 
@@ -30,9 +29,9 @@ public class ApiError {
     private List<ApiSubError> subErrors;
 
     private ApiError() {
-        timestamp = ZonedDateTime.now(ZoneId.systemDefault());
-        this.message = ExceptionMessages.UNEXPECTED_ERROR;
-        subErrors = new LinkedList<>();
+        this.datetime = new Date();
+        this.message = "Unexpected error";
+        this.subErrors = new LinkedList<>();
     }
 
     public ApiError(HttpStatus status) {
@@ -43,7 +42,7 @@ public class ApiError {
     public ApiError(HttpStatus status, Throwable e) {
         this();
         this.status = status;
-        this.debugMessage = Objects.nonNull(e) ? ExceptionUtils.getStackTrace(e) : null;
+        this.debugMessage = e != null ? ExceptionUtils.getStackTrace(e) : null;
     }
 
     public ApiError(HttpStatus status, String message) {
@@ -56,7 +55,7 @@ public class ApiError {
         this();
         this.status = status;
         this.message = message;
-        this.debugMessage = Objects.nonNull(e) ? ExceptionUtils.getStackTrace(e) : null;
+        this.debugMessage = e != null ? ExceptionUtils.getStackTrace(e) : null;
     }
 
     public boolean addSubError(ApiSubError subError) {

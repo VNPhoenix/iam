@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class AdvisorController {
@@ -63,7 +62,7 @@ public class AdvisorController {
                 .filter(FieldError.class::isInstance)
                 .map(FieldError.class::cast)
                 .map(fieldError -> new ApiSubError(fieldError.getDefaultMessage()))
-                .collect(Collectors.toList());
+                .toList();
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ExceptionMessages.Binding.METHOD_ARGUMENT_NOT_VALID);
         apiError.setSubErrors(subErrors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);

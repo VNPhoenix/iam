@@ -1,4 +1,4 @@
-package vn.dangdnh.service.identity;
+package vn.dangdnh.service;
 
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;

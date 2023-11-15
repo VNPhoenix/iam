@@ -2,11 +2,11 @@ package vn.dangdnh.dto.request.user;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)

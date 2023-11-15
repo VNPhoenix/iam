@@ -9,7 +9,7 @@ import java.time.Duration;
 public class JwtConfig {
 
     // Default expiration time is 15 minutes
-    @Value("${jwt.expirationTime:PT15M}")
+    @Value("${jwt.expiration-time:PT15M}")
     private Duration duration;
 
     public long getExpirationInSecond() {

@@ -14,5 +14,5 @@ public interface UserRepositoryCustom {
 
     boolean existsByRole(String role);
 
-    UpdateResult updateLastLoginByUsername(String username, Date date);
+    UpdateResult findAndUpdateLastLoginByUsername(String username, Date date);
 }
