@@ -31,10 +31,9 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers("/iam/auth/**", "/iam/home/**").permitAll()
                         .anyRequest().authenticated())
@@ -47,7 +46,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedMethods(Collections.singletonList("*"));
