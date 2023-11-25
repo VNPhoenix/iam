@@ -116,8 +116,9 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
             throw new EntityAlreadyExistsException();
         }
         validateRolePattern(command.getRoleName());
-        Role role = new Role();
-        role.setName(command.getRoleName());
+        Role role = new Role()
+                .setName(command.getRoleName())
+                .setDeletable(true);
         role = roleRepository.insert(role);
         return mapToDto(role);
     }
