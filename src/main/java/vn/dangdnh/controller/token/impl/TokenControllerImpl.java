@@ -22,13 +22,13 @@ public class TokenControllerImpl implements TokenController {
 
     @Override
     public ResponseEntity<TokenVerification> verifyToken(JwtTokenVerification request) {
-        TokenVerification response = service.verifyToken(request);
+        var response = service.verifyToken(request);
         return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<JwtToken> renewToken(JwtTokenRenew request) {
-        JwtToken response = service.renewJwtToken(request);
+        var response = service.renewJwtToken(request);
         return ResponseEntity.ok(response);
     }
 }

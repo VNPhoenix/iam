@@ -12,7 +12,6 @@ import vn.dangdnh.component.JwtUtils;
 import vn.dangdnh.definition.ConstantValues;
 import vn.dangdnh.definition.CryptoAlgorithm;
 import vn.dangdnh.definition.DefaultRole;
-import vn.dangdnh.definition.message.exception.ExceptionMessages;
 import vn.dangdnh.dto.command.RoleCreateCommand;
 import vn.dangdnh.dto.request.token.JwtTokenRenew;
 import vn.dangdnh.dto.request.token.JwtTokenVerification;
@@ -24,7 +23,7 @@ import vn.dangdnh.dto.response.TokenVerification;
 import vn.dangdnh.dto.role.RoleDto;
 import vn.dangdnh.dto.user.UserInfoDto;
 import vn.dangdnh.exception.AuthenticationException;
-import vn.dangdnh.exception.EntityAlreadyExistsException;
+import vn.dangdnh.exception.EntityExistsException;
 import vn.dangdnh.exception.EntityNotFoundException;
 import vn.dangdnh.model.role.Role;
 import vn.dangdnh.model.user.UserInfo;
@@ -34,6 +33,7 @@ import vn.dangdnh.service.RoleService;
 import vn.dangdnh.service.TokenService;
 import vn.dangdnh.service.UserService;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,7 +60,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     @Override
     public UserInfoDto signUp(UserSignUp request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new EntityAlreadyExistsException(ExceptionMessages.USERNAME_ALREADY_EXISTS);
+            throw new EntityExistsException();
         }
         // Validate username
         validateUsernamePattern(request.getUsername());
@@ -70,34 +70,34 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
         String salt = BCrypt.gensalt();
         String encryptedPassword = BCrypt.hashpw(request.getPassword(), salt);
         Date date = new Date();
-        UserInfo userInfo = new UserInfo();
-        userInfo = userInfo.username(request.getUsername())
-                .password(encryptedPassword)
-                .isEnabled(true)
-                .isAccountNonExpired(true)
-                .isAccountNonLocked(true)
-                .isCredentialsNonExpired(true)
-                .authorities(defaultAuthorities())
-                .lastLogin(new Date(0))
-                .updatedAt(date)
-                .createdAt(date)
-                .cryptoAlgorithm(CryptoAlgorithm.BCRYPT);
+        UserInfo userInfo = new UserInfo()
+                .setUsername(request.getUsername())
+                .setPassword(encryptedPassword)
+                .setIsEnabled(true)
+                .setIsAccountNonExpired(true)
+                .setIsAccountNonLocked(true)
+                .setIsCredentialsNonExpired(true)
+                .setAuthorities(defaultAuthorities())
+                .setLastLogin(new Date(0))
+                .setUpdatedAt(date)
+                .setCreatedAt(date)
+                .setCryptoAlgorithm(CryptoAlgorithm.BCRYPT);
         userInfo = userRepository.insert(userInfo);
-        return mapToDto(userInfo);
+        return map(userInfo, UserInfoDto.class);
     }
 
     @Override
     public TokenDetails signIn(UserSignIn request) {
         UserInfo userInfo = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AuthenticationException("Wrong username"));
-        if (!BCrypt.checkpw(request.getPassword(), userInfo.password())) {
+        if (!BCrypt.checkpw(request.getPassword(), userInfo.getPassword())) {
             throw new AuthenticationException("Wrong password");
         }
         Date date = new Date();
-        userRepository.findAndUpdateLastLoginByUsername(userInfo.username(), date);
-        String jwtToken = jwtUtils.generateToken(userInfo.username());
+        userRepository.findAndUpdateLastLoginByUsername(userInfo.getUsername(), date);
+        String jwtToken = jwtUtils.generateToken(userInfo.getUsername());
         return new TokenDetails()
-                .setUsername(userInfo.username())
+                .setUsername(userInfo.getUsername())
                 .setAccessToken(jwtToken);
     }
 
@@ -106,27 +106,28 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     public RoleDto findRoleById(String id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-        return mapToDto(role);
+        return map(role, RoleDto.class);
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public RoleDto createRole(RoleCreateCommand command) {
         if (roleRepository.existsById(command.getRoleName())) {
-            throw new EntityAlreadyExistsException();
+            throw new EntityExistsException();
         }
         validateRolePattern(command.getRoleName());
         Role role = new Role()
                 .setName(command.getRoleName())
                 .setDeletable(true);
         role = roleRepository.insert(role);
-        return mapToDto(role);
+        return map(role, RoleDto.class);
     }
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteRoleById(String id) {
+    public String deleteRoleById(String id) {
         roleRepository.deleteById(id);
+        return "Entity was deleted successfully";
     }
 
     @Override
@@ -138,13 +139,13 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
             Optional<UserInfo> userOptional = userRepository.findByUsername(username);
             if (userOptional.isPresent()) {
                 UserInfo userInfo = userOptional.get();
-                boolean valid = userInfo.isEnabled() && userInfo.isAccountNonLocked()
-                        && userInfo.isAccountNonExpired() && userInfo.isCredentialsNonExpired();
+                boolean valid = userInfo.getIsEnabled() && userInfo.getIsAccountNonLocked()
+                        && userInfo.getIsAccountNonExpired() && userInfo.getIsCredentialsNonExpired();
                 if (valid) {
                     return new TokenVerification()
                             .setValid(true)
-                            .setUsername(userInfo.username())
-                            .setAuthorities(userInfo.authorities());
+                            .setUsername(userInfo.getUsername())
+                            .setAuthorities(userInfo.getAuthorities());
                 }
             }
         } catch (JWTVerificationException ignored) {
@@ -168,12 +169,8 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
         return Collections.singletonList(DefaultRole.ROLE_USER.name());
     }
 
-    private UserInfoDto mapToDto(UserInfo o) {
-        return o != null ? modelMapper.map(o, UserInfoDto.class) : null;
-    }
-
-    private RoleDto mapToDto(Role o) {
-        return o != null ? modelMapper.map(o, RoleDto.class) : null;
+    private <D> D map(Object o, Type type) {
+        return modelMapper.map(o, type);
     }
 
     private void validateUsernamePattern(String username) {

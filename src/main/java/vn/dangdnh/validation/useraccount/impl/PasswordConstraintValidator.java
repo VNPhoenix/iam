@@ -7,7 +7,6 @@ import vn.dangdnh.validation.useraccount.ValidPassword;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
@@ -27,7 +26,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if (Objects.isNull(s)) {
+        if (s == null) {
             return true;
         }
         PasswordValidator validator = new PasswordValidator(Arrays.asList(new LengthRule(minLength, maxLength),

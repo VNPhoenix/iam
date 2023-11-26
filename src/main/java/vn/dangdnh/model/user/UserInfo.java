@@ -7,15 +7,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import vn.dangdnh.definition.CollectionNames;
+import vn.dangdnh.definition.MongoCollections;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-@Accessors(chain = true, fluent = true)
-@Document(collection = CollectionNames.USERS)
+@Accessors(chain = true)
+@Document(collection = MongoCollections.USERS)
 public class UserInfo {
 
     @Id

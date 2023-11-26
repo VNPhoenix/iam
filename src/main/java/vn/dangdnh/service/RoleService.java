@@ -12,5 +12,5 @@ public interface RoleService {
 
     RoleDto createRole(@Valid RoleCreateCommand command);
 
-    void deleteRoleById(String id);
+    String deleteRoleById(String id);
 }

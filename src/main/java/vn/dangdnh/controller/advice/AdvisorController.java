@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,38 +13,37 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import vn.dangdnh.definition.message.exception.ExceptionMessages;
 import vn.dangdnh.dto.apierror.ApiError;
 import vn.dangdnh.dto.apierror.ApiSubError;
 import vn.dangdnh.exception.AuthenticationException;
-import vn.dangdnh.exception.DataConflictException;
-import vn.dangdnh.exception.EntityAlreadyExistsException;
+import vn.dangdnh.exception.EntityExistsException;
 import vn.dangdnh.exception.EntityNotFoundException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Objects;
 
 @ControllerAdvice
 public class AdvisorController {
 
+    private static final Logger logger = LogManager.getLogger(AdvisorController.class);
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ApiError> handleEntityNotFoundException(EntityNotFoundException e) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ExceptionMessages.ENTITY_NOT_FOUND);
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, "Entity was not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
-    @ExceptionHandler(EntityAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleEntityAlreadyExistsException(EntityAlreadyExistsException e) {
-        ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ExceptionMessages.ENTITY_ALREADY_EXISTS);
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<ApiError> handleEntityAlreadyExistsException(EntityExistsException e) {
+        ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Entity already exists");
         apiError.addSubError(new ApiSubError(e.getMessage()));
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(apiError);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiError> handleConstraintViolationException(ConstraintViolationException e) {
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ExceptionMessages.Validation.CONSTRAINT_VIOLATION);
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Constraint violation");
         for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
             ApiSubError subError = new ApiSubError(violation.getMessage());
             apiError.addSubError(subError);
@@ -63,51 +64,45 @@ public class AdvisorController {
                 .map(FieldError.class::cast)
                 .map(fieldError -> new ApiSubError(fieldError.getDefaultMessage()))
                 .toList();
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ExceptionMessages.Binding.METHOD_ARGUMENT_NOT_VALID);
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Method argument is not valid");
         apiError.setSubErrors(subErrors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @SuppressWarnings("unchecked")
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ExceptionMessages.Binding.HTTP_MESSAGE_NOT_READABLE);
+    public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException e)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Http message is not readable");
         Throwable cause = e.getCause();
-        if (cause instanceof JsonParseException) {
-            JsonParseException jpe = (JsonParseException) cause;
+        if (cause instanceof JsonParseException jpe) {
             apiError.addSubError(new ApiSubError(jpe.getOriginalMessage()));
         } else if (cause instanceof JsonMappingException) {
             Class<?> clazz = cause.getClass();
             Method method = clazz.getMethod("getPath");
             List<JsonMappingException.Reference> references = (List<JsonMappingException.Reference>) method.invoke(cause);
-            if (Objects.nonNull(references) && !references.isEmpty()) {
+            if (references != null && !references.isEmpty()) {
                 for (JsonMappingException.Reference reference : references) {
                     String message = String.format("Field is invalid: %s", reference.getFieldName());
                     apiError.addSubError(new ApiSubError(message));
                 }
             }
         } else {
-            apiError = new ApiError(HttpStatus.BAD_REQUEST, ExceptionMessages.Binding.HTTP_MESSAGE_NOT_READABLE, e);
+            apiError = new ApiError(HttpStatus.BAD_REQUEST, "Http message is not readable", e);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthenticationException(AuthenticationException e) {
-        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ExceptionMessages.Security.AUTHENTICATION_FAILED);
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, "Unauthorized");
         apiError.addSubError(new ApiSubError(e.getMessage()));
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
-    @ExceptionHandler(DataConflictException.class)
-    public ResponseEntity<ApiError> handleOperationNotAllowedException(DataConflictException e) {
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT, ExceptionMessages.OPERATION_NOT_ALLOWED);
-        apiError.addSubError(new ApiSubError(ExceptionMessages.ROLE_ALREADY_IN_USE));
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGenericException(Exception e) {
+        logger.error(e);
         ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
