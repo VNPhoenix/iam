@@ -7,9 +7,9 @@ import vn.dangdnh.validation.enumvalues.impl.EnumConstraintValidator;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = EnumConstraintValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = EnumConstraintValidator.class)
 public @interface ValidEnum {
 
     String regexp() default "[a-zA-Z0-9_]";

@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import vn.dangdnh.definition.CollectionNames;
+import vn.dangdnh.definition.MongoCollections;
 
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-@Document(collection = CollectionNames.ROLES)
+@Document(collection = MongoCollections.ROLES)
 public class Role {
 
     @Id

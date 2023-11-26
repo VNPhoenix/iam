@@ -23,13 +23,13 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserInfoDto> signUp(@RequestBody UserSignUp request) {
-        UserInfoDto response = service.signUp(request);
+        var response = service.signUp(request);
         return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<TokenDetails> signIn(@RequestBody UserSignIn request) {
-        TokenDetails response = service.signIn(request);
+        var response = service.signIn(request);
         return ResponseEntity.ok(response);
     }
 }
