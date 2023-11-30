@@ -7,16 +7,16 @@ import vn.dangdnh.validation.useraccount.impl.PasswordConstraintValidator;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = PasswordConstraintValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = PasswordConstraintValidator.class)
 public @interface ValidPassword {
 
     int minLength() default PasswordConstraintValidator.MIN_LENGTH;
 
     int maxLength() default PasswordConstraintValidator.MAX_LENGTH;
 
-    String message() default "Password is invalid!";
+    String message() default "Password is invalid";
 
     Class<?>[] groups() default {};
 

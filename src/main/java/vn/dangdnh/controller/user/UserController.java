@@ -2,6 +2,7 @@ package vn.dangdnh.controller.user;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import vn.dangdnh.dto.request.user.UserSignUp;
 import vn.dangdnh.dto.response.TokenDetails;
 import vn.dangdnh.dto.user.UserInfoDto;
 
+@CrossOrigin(value = "*")
 @RequestMapping("${app.context-path}")
 public interface UserController {
 

@@ -15,13 +15,22 @@ import vn.dangdnh.service.TokenService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
+    private final Predicate<HttpServletRequest> notFilteredPredicate;
 
-    public JwtTokenFilter(final TokenService tokenService) {
+    public JwtTokenFilter(final TokenService tokenService,
+                          final Predicate<HttpServletRequest> notFilteredPredicate) {
         this.tokenService = tokenService;
+        this.notFilteredPredicate = notFilteredPredicate;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return notFilteredPredicate.test(request);
     }
 
     @Override
