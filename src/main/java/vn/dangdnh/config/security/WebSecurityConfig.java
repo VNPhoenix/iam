@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,6 +16,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import vn.dangdnh.config.security.entrypoint.JwtAuthEntryPoint;
 import vn.dangdnh.config.security.filter.JwtTokenFilter;
+import vn.dangdnh.config.security.filter.NotFilteredPredicate;
 import vn.dangdnh.service.TokenService;
 
 import java.util.Collections;
@@ -26,23 +26,18 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private List<String> antMatchersIgnored;
-
     private TokenService tokenService;
 
-    @Autowired
-    public void setAntMatchersIgnored(@Value("${security.ignoring.ant-matchers}") List<String> antMatchersIgnored) {
-        this.antMatchersIgnored = antMatchersIgnored;
-    }
+    private List<String> antMatchersNotFiltered;
 
     @Autowired
     public void setTokenService(TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers(antMatchersIgnored.toArray(new String[0]));
+    @Autowired
+    public void setAntMatchersNotFiltered(@Value("${filter.not-filtered-ant-matchers}") List<String> antMatchersNotFiltered) {
+        this.antMatchersNotFiltered = antMatchersNotFiltered;
     }
 
     @Bean
@@ -50,12 +45,14 @@ public class WebSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
+                        .requestMatchers(antMatchersNotFiltered.toArray(new String[0])).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
                         .authenticationEntryPoint(new JwtAuthEntryPoint()))
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtTokenFilter(tokenService), BasicAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenFilter(tokenService, new NotFilteredPredicate(antMatchersNotFiltered)),
+                        BasicAuthenticationFilter.class);
         return http.build();
     }
 
