@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.passay.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import vn.dangdnh.component.JwtUtils;
 import vn.dangdnh.definition.ConstantValues;
@@ -29,6 +28,7 @@ import vn.dangdnh.model.role.Role;
 import vn.dangdnh.model.user.UserInfo;
 import vn.dangdnh.repository.role.RoleRepository;
 import vn.dangdnh.repository.user.UserRepository;
+import vn.dangdnh.security.encoder.PasswordEncoder;
 import vn.dangdnh.service.RoleService;
 import vn.dangdnh.service.TokenService;
 import vn.dangdnh.service.UserService;
@@ -43,16 +43,19 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final ModelMapper modelMapper;
 
     @Autowired
     public IAMServiceImpl(final UserRepository userRepository,
                           final RoleRepository roleRepository,
+                          final PasswordEncoder passwordEncoder,
                           final JwtUtils jwtUtils,
                           final ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.modelMapper = modelMapper;
     }
@@ -67,8 +70,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
         // Validate password
         validatePasswordPattern(request.getPassword());
         // Create userInfo details
-        String salt = BCrypt.gensalt();
-        String encryptedPassword = BCrypt.hashpw(request.getPassword(), salt);
+        String encryptedPassword = passwordEncoder.encode(request.getPassword());
         Date date = new Date();
         UserInfo userInfo = new UserInfo()
                 .setUsername(request.getUsername())
@@ -90,7 +92,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     public TokenDetails signIn(UserSignIn request) {
         UserInfo userInfo = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AuthenticationException("Wrong username"));
-        if (!BCrypt.checkpw(request.getPassword(), userInfo.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), userInfo.getPassword())) {
             throw new AuthenticationException("Wrong password");
         }
         Date date = new Date();
