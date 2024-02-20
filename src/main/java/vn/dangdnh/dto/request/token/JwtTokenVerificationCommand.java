@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtTokenVerification {
+public class JwtTokenVerificationCommand {
 
     @JsonProperty("access_token")
     @NotNull(message = "access_token must not be null")

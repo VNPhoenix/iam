@@ -12,8 +12,8 @@ import vn.dangdnh.definition.ConstantValues;
 import vn.dangdnh.definition.CryptoAlgorithm;
 import vn.dangdnh.definition.DefaultRole;
 import vn.dangdnh.dto.command.RoleCreateCommand;
-import vn.dangdnh.dto.request.token.JwtTokenRenew;
-import vn.dangdnh.dto.request.token.JwtTokenVerification;
+import vn.dangdnh.dto.request.token.JwtTokenRenewCommand;
+import vn.dangdnh.dto.request.token.JwtTokenVerificationCommand;
 import vn.dangdnh.dto.request.user.UserSignIn;
 import vn.dangdnh.dto.request.user.UserSignUp;
 import vn.dangdnh.dto.response.JwtToken;
@@ -133,7 +133,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     }
 
     @Override
-    public TokenVerification verifyToken(JwtTokenVerification requestCommand) {
+    public TokenVerification verifyToken(JwtTokenVerificationCommand requestCommand) {
         String accessToken = requestCommand.getAccessToken();
         try {
             DecodedJWT decodedJWT = jwtUtils.verifyToken(accessToken);
@@ -158,7 +158,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     }
 
     @Override
-    public JwtToken renewJwtToken(JwtTokenRenew requestCommand) {
+    public JwtToken renewJwtToken(JwtTokenRenewCommand requestCommand) {
         return null;
     }
 

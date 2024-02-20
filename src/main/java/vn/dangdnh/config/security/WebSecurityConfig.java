@@ -16,7 +16,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import vn.dangdnh.config.security.entrypoint.JwtAuthEntryPoint;
 import vn.dangdnh.config.security.filter.JwtTokenFilter;
-import vn.dangdnh.config.security.filter.NotFilteredPredicate;
 import vn.dangdnh.service.TokenService;
 
 import java.util.Collections;
@@ -36,7 +35,7 @@ public class WebSecurityConfig {
     }
 
     @Autowired
-    public void setAntMatchersNotFiltered(@Value("${filter.not-filtered-ant-matchers}") List<String> antMatchersNotFiltered) {
+    public void setAntMatchersNotFiltered(@Value("${token-filter.ant-matchers.not-filtered}") List<String> antMatchersNotFiltered) {
         this.antMatchersNotFiltered = antMatchersNotFiltered;
     }
 
@@ -51,7 +50,7 @@ public class WebSecurityConfig {
                         .authenticationEntryPoint(new JwtAuthEntryPoint()))
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtTokenFilter(tokenService, new NotFilteredPredicate(antMatchersNotFiltered)),
+                .addFilterBefore(new JwtTokenFilter(tokenService, antMatchersNotFiltered),
                         BasicAuthenticationFilter.class);
         return http.build();
     }

@@ -8,38 +8,42 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-import vn.dangdnh.dto.request.token.JwtTokenVerification;
+import vn.dangdnh.dto.request.token.JwtTokenVerificationCommand;
 import vn.dangdnh.dto.response.TokenVerification;
 import vn.dangdnh.service.TokenService;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private final Predicate<HttpServletRequest> notFilteredPredicate;
+    private final List<String> antMatchersNotFiltered;
+    private final AntPathMatcher antPathMatcher;
 
     public JwtTokenFilter(final TokenService tokenService,
-                          final Predicate<HttpServletRequest> notFilteredPredicate) {
+                          final List<String> antMatchersNotFiltered) {
         this.tokenService = tokenService;
-        this.notFilteredPredicate = notFilteredPredicate;
+        this.antMatchersNotFiltered = antMatchersNotFiltered != null
+                ? antMatchersNotFiltered : Collections.emptyList();
+        this.antPathMatcher = new AntPathMatcher();
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return notFilteredPredicate.test(request);
+        return antMatchersNotFiltered.stream()
+                .anyMatch(e -> antPathMatcher.match(e, request.getRequestURI()));
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
-        String bearerToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if (bearerToken != null) {
-            String accessToken = bearerToken.substring("Bearer ".length());
-            JwtTokenVerification command = new JwtTokenVerification(accessToken);
+        String token = getToken(httpServletRequest);
+        if (token != null) {
+            JwtTokenVerificationCommand command = new JwtTokenVerificationCommand(token);
             TokenVerification result = tokenService.verifyToken(command);
             if (Boolean.TRUE.equals(result.getValid())) {
                 List<SimpleGrantedAuthority> authorities = result.getAuthorities().stream()
@@ -51,5 +55,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+    }
+
+    private String getToken(HttpServletRequest request) {
+        String headerValue = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (headerValue != null && headerValue.startsWith("Bearer")) {
+            return headerValue.substring("Bearer ".length());
+        }
+        return null;
     }
 }
