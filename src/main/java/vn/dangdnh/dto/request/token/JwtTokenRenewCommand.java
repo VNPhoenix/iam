@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtTokenRenew {
+public class JwtTokenRenewCommand {
 
     @JsonProperty("refresh_token")
     @NotNull(message = "refresh_token must not be null")
