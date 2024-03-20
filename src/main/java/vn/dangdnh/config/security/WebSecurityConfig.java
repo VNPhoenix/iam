@@ -27,7 +27,7 @@ public class WebSecurityConfig {
 
     private TokenService tokenService;
 
-    private List<String> antMatchersNotFiltered;
+    private List<String> securityExclusionAntMatchers;
 
     @Autowired
     public void setTokenService(TokenService tokenService) {
@@ -35,23 +35,24 @@ public class WebSecurityConfig {
     }
 
     @Autowired
-    public void setAntMatchersNotFiltered(@Value("${token-filter.ant-matchers.not-filtered}") List<String> antMatchersNotFiltered) {
-        this.antMatchersNotFiltered = antMatchersNotFiltered;
+    public void setAntMatchersNotFiltered(@Value("${security.exclusion.ant-matchers}") List<String> securityExclusionAntMatchers) {
+        this.securityExclusionAntMatchers = securityExclusionAntMatchers;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        JwtTokenFilter jwtTokenFilter = new JwtTokenFilter(tokenService)
+                .setSecurityExclusionAntMatchers(securityExclusionAntMatchers);
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers(antMatchersNotFiltered.toArray(new String[0])).permitAll()
+                        .requestMatchers(securityExclusionAntMatchers.toArray(new String[0])).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
                         .authenticationEntryPoint(new JwtAuthEntryPoint()))
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtTokenFilter(tokenService, antMatchersNotFiltered),
-                        BasicAuthenticationFilter.class);
+                .addFilterBefore(jwtTokenFilter, BasicAuthenticationFilter.class);
         return http.build();
     }
 
