@@ -22,4 +22,8 @@ public class TokenVerification {
     private String username;
 
     private List<String> authorities;
+
+    public TokenVerification(boolean valid) {
+        this.valid = valid;
+    }
 }

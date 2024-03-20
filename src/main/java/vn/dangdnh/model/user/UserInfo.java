@@ -43,9 +43,6 @@ public class UserInfo {
     @Field("crypto_algorithm")
     private String cryptoAlgorithm;
 
-    @Field("last_login")
-    private Date lastLogin;
-
     @Field("created_at")
     private Date createdAt;
 
