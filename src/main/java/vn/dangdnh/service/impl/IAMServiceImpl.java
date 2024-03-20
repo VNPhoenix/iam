@@ -2,6 +2,8 @@ package vn.dangdnh.service.impl;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.passay.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ import java.util.regex.Pattern;
 @Service
 public class IAMServiceImpl implements UserService, TokenService, RoleService {
 
+    private static final Logger logger = LogManager.getLogger(IAMServiceImpl.class);
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -68,9 +72,8 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
         validateUsernamePattern(request.getUsername());
         // Validate password
         validatePasswordPattern(request.getPassword());
-        // Create userInfo details
+        // Create UserInfo details
         String encryptedPassword = passwordEncoder.encode(request.getPassword());
-        Date date = new Date();
         UserInfo userInfo = new UserInfo()
                 .setUsername(request.getUsername())
                 .setPassword(encryptedPassword)
@@ -79,9 +82,8 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
                 .setIsAccountNonLocked(true)
                 .setIsCredentialsNonExpired(true)
                 .setAuthorities(defaultAuthorities())
-                .setLastLogin(new Date(0))
-                .setUpdatedAt(date)
-                .setCreatedAt(date)
+                .setUpdatedAt(new Date(0))
+                .setCreatedAt(new Date())
                 .setCryptoAlgorithm(CryptoAlgorithm.BCRYPT);
         userInfo = userRepository.insert(userInfo);
         return modelMapper.map(userInfo, UserInfoDto.class);
@@ -94,8 +96,6 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
         if (!passwordEncoder.matches(request.getPassword(), userInfo.getPassword())) {
             throw new AuthenticationException("Wrong password");
         }
-        Date date = new Date();
-        userRepository.findAndUpdateLastLoginByUsername(userInfo.getUsername(), date);
         String jwtToken = jwtUtils.generateToken(userInfo.getUsername());
         return new TokenDetails()
                 .setUsername(userInfo.getUsername())
@@ -149,11 +149,10 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
                             .setAuthorities(userInfo.getAuthorities());
                 }
             }
-        } catch (JWTVerificationException ignored) {
-
+        } catch (JWTVerificationException e) {
+            logger.error(e);
         }
-        return new TokenVerification()
-                .setValid(false);
+        return new TokenVerification(false);
     }
 
     @Override
