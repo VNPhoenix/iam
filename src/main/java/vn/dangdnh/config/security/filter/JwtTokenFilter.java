@@ -15,26 +15,27 @@ import vn.dangdnh.dto.response.TokenVerification;
 import vn.dangdnh.service.TokenService;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private final List<String> antMatchersNotFiltered;
     private final AntPathMatcher antPathMatcher;
+    private List<String> securityExclusionAntMatchers;
 
-    public JwtTokenFilter(final TokenService tokenService,
-                          final List<String> antMatchersNotFiltered) {
+    public JwtTokenFilter(final TokenService tokenService) {
         this.tokenService = tokenService;
-        this.antMatchersNotFiltered = antMatchersNotFiltered != null
-                ? antMatchersNotFiltered : Collections.emptyList();
         this.antPathMatcher = new AntPathMatcher();
+    }
+
+    public JwtTokenFilter setSecurityExclusionAntMatchers(final List<String> securityExclusionAntMatchers) {
+        this.securityExclusionAntMatchers = securityExclusionAntMatchers;
+        return this;
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return antMatchersNotFiltered.stream()
+        return securityExclusionAntMatchers != null && securityExclusionAntMatchers.stream()
                 .anyMatch(e -> antPathMatcher.match(e, request.getRequestURI()));
     }
 

@@ -35,7 +35,7 @@ public class AdvisorController {
     }
 
     @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity<ApiError> handleEntityAlreadyExistsException(EntityExistsException e) {
+    public ResponseEntity<ApiError> handleEntityExistsException(EntityExistsException e) {
         ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, "Entity already exists");
         apiError.addSubError(new ApiSubError(e.getMessage()));
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(apiError);

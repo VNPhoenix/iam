@@ -33,7 +33,6 @@ import vn.dangdnh.service.RoleService;
 import vn.dangdnh.service.TokenService;
 import vn.dangdnh.service.UserService;
 
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,7 +84,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
                 .setCreatedAt(date)
                 .setCryptoAlgorithm(CryptoAlgorithm.BCRYPT);
         userInfo = userRepository.insert(userInfo);
-        return map(userInfo, UserInfoDto.class);
+        return modelMapper.map(userInfo, UserInfoDto.class);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
     public RoleDto findRoleById(String id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-        return map(role, RoleDto.class);
+        return modelMapper.map(role, RoleDto.class);
     }
 
     @Override
@@ -122,7 +121,7 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
                 .setName(command.getRoleName())
                 .setDeletable(true);
         role = roleRepository.insert(role);
-        return map(role, RoleDto.class);
+        return modelMapper.map(role, RoleDto.class);
     }
 
     @Override
@@ -169,10 +168,6 @@ public class IAMServiceImpl implements UserService, TokenService, RoleService {
 
     private List<String> defaultAuthorities() {
         return Collections.singletonList(DefaultRole.ROLE_USER.name());
-    }
-
-    private <D> D map(Object o, Type type) {
-        return modelMapper.map(o, type);
     }
 
     private void validateUsernamePattern(String username) {
